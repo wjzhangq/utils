@@ -3,6 +3,8 @@
 API Google URL Shortner
 marcusnunes.com
 */
+$str = 'aHR0cDovL3d3dy5pcWltdXNpYy5jb20vd3AtY29udGVudC91cGxvYWRzLzIwMTAvMDcvV2VsY29tZS10by1pUWlNdXNpYy5tcDM';
+var_dump(base64_decode($str));
 
 echo goo::get('http://www.baidu.com');
 
@@ -34,7 +36,7 @@ class goo{
     $i = $i >> 4 & 67108800 | $i & 63;
     $i = $i >> 4 & 4193280 | $i & 1023;
     $i = $i >> 4 & 245760 | $i & 16383;
-    $j = “7″;
+    $j = "7";
     $h = self::tkf($b);
     $k = ($i >> 2 & 15) << 4 | $h & 15;
     $k |= ($i >> 6 & 15) << 12 | ($h >> 8 & 15) << 8;
