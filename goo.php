@@ -3,13 +3,11 @@
 API Google URL Shortner
 marcusnunes.com
 */
-$str = 'aHR0cDovL3d3dy5pcWltdXNpYy5jb20vd3AtY29udGVudC91cGxvYWRzLzIwMTAvMDcvV2VsY29tZS10by1pUWlNdXNpYy5tcDM';
-var_dump(base64_decode($str));
 
-echo goo::get('http://www.baidu.com');
+echo goo::get('http://du.xiaomanyao.info/COFFdD0xMjg2OTYzNzIwJmk9NjAuMjQ3LjEwNC45OSZ1PVNvbmdzL3YyL2ZhaW50UUMvY2MvZjEvNDFjOTU5ZmI2NjU1M2IwNWFiZmE4MTBiYzNhMGYxY2MubXAzJm09YjAwNjkzZWJlOGMyYmEwZDBhNDRjMjYwNjYxN2I0NjImdj1kb3duJm491tC5+iZzPczauPG2+yZwPW4=.mp3');
 
 class goo{
-  function get($url){
+  static function get($url){
     $error = '';
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_URL, 'http://goo.gl/api/url');   //goo.gl api url
