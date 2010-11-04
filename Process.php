@@ -4,7 +4,7 @@ class Process {
     protected $resource; //process resource
     public $pipes;  //process pipes
     public $php_path = 'php'; //system php path
-	public $script_path = ''; //运行j脚本
+    public $script_path = ''; //运行脚本
     protected $start_time; //subproces start time
     protected $no = 0; //subprocc no
     public $name = ''; //subprocc name
@@ -18,25 +18,25 @@ class Process {
     
     //判断是否是子进程
     static public function isSubProcess(){
-		//记录结果
-		static $ret = null;
-		if ($ret === null){
-			$ret = false;
-	        $name = '';
-	        foreach($GLOBALS['argv'] as $v){
-	            if (strncmp('__subProcessName=', $v, 17) == 0){
-	                $name = substr($v, 17);
-	                $ret = true;
-	                break;
-	            }
-	        }
+        //记录结果
+        static $ret = null;
+        if ($ret === null){
+            $ret = false;
+            $name = '';
+            foreach($GLOBALS['argv'] as $v){
+                if (strncmp('__subProcessName=', $v, 17) == 0){
+                    $name = substr($v, 17);
+                    $ret = true;
+                    break;
+                }
+            }
 
-	        if ($ret){
-	            self::initSubProcess($name);
-	        }else{
-	            self::initProcess();
-	        }
-		}
+            if ($ret){
+                self::initSubProcess($name);
+            }else{
+                self::initProcess();
+            }
+        }
         return $ret;
     }
     
@@ -65,27 +65,27 @@ class Process {
         }
         $this->name = $name;
         
-		//设置php绝对路径
+        //设置php绝对路径
         if (isset($_ENV['_']) && is_file($_ENV['_'])){
             $this->php_path = $_ENV['_'];
         }
 
-		if (!is_file($this->script_path)){
-			$path = $_SERVER['PWD'] . '/' . $_SERVER['SCRIPT_FILENAME'];
-			if (!is_file($path)){
-				throw new Exception('Not locate script path');
-			}
-			$this->script_path = $path;
-		}
+        if (!is_file($this->script_path)){
+            $path = $_SERVER['PWD'] . '/' . basename($_SERVER['SCRIPT_FILENAME']);
+            if (!is_file($path)){
+                throw new Exception('Not locate script path');
+            }
+            $this->script_path = $path;
+        }
 
-		//检测script脚本
+        //检测script脚本
         
-		//检测是否是linux
+        //检测是否是linux
         if (file_exists('/dev/stdout')){
             $descriptorspec    = array(
                 0 => array('pipe', 'r'),
-                1 => array('file', '/dev/stdout', 'w'),
-                2 => array('file', '/dev/stderr', 'w'),
+                1 => array('file', '/dev/stdout', 'a'),
+                2 => array('file', '/dev/stderr', 'a'),
             );          
         }else{
             $descriptorspec    = array(
@@ -186,24 +186,27 @@ class Process {
 
 //return;
 if (!Process::isSubProcess()){
-	//主进程
-	
-	//开启2个子进程
+    //主进程
+    
+    //开启2个子进程
     $h = new Process(array('sleep'=>8));
     $h1 = new Process(array('sleep'=>20));
 
-	//等待子进程结束
+    //等待子进程结束
     while(Process::getActiveList()){
         sleep(1);
     }
     
     echo "main process end\n";
 }else{
-	//子进程
+    //子进程
     $argv = Process::getArgv();  //获取主进程中参数
     if (isset($argv['sleep'])){
         echo "Process " . Process::getName() . " will sleep " . $argv['sleep'] . "\n";
-        sleep($argv['sleep']);
+        for($i=0; $i< $argv['sleep']; $i++){
+            sleep(1);
+            echo sprintf("Pno. %s is sleep seq no. %s\n", Process::getName(), $i);
+        }
         echo "Process " . Process::getName()  . " is end\n";
     }else{
         echo Process::getName() ."argv error!\n";
