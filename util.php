@@ -46,6 +46,7 @@ class util_array{
 		return $ret;
 	}
 	
+	//自动判断cols是数字还是字串key
 	function getRealCol(&$arr, $col){
 		$real_col = null;
 		$row = current($arr);
@@ -126,6 +127,61 @@ class util_array{
 		eval ($EvalString);
 		return $ArrayData;
 	}
+	
+	
+	//把$i按位转换
+	function mutSeq($i, $weight){
+		$weight_len = count($weight);
+		$ret = array_pad(array(), $weight_len, 0);
+
+		for($j=0; $j < $weight_len; $j++){
+			$tmp = floor($i / $weight[$j]);
+			if ($tmp > 0){
+				$ret[$j] = $i % $weight[$j];
+				$i = $tmp;
+			}else{
+				$ret[$j] = $i;
+				break;
+			}
+		}
+		return $ret;
+	}
+	
+	//数组乘法
+	function array_mult(){
+		$list = func_get_args();
+		$num_list = count($list);
+		if ($num_list < 2){
+			throw new Exception('param count must be two at lister');
+		}
+
+		$new = array();
+		$seq = array();
+		$mutl = 1;
+		foreach($list as $row){
+			if (!is_array($row)){
+				throw new Exception('param must be array');
+			}
+			if (empty($row)){
+				throw new Exception('param is a empty array');
+			}
+			$seq[] = count($row);
+			$mutl *= count($row);
+		}
+
+		$post_list = array();
+		for($i=0; $i < $mutl; $i++){
+			$tmp = self::mutSeq($i, $seq);
+			$item = array();
+			foreach($tmp as $j=>$v){
+				$item[] = $list[$j][$v];
+			}
+			$post_list[] = $item;
+		}
+
+		var_dump($post_list);
+		return $post_list;
+	}
 }
 
 
@@ -141,5 +197,6 @@ $arr1 = array(
 );
 
 var_dump(util_array::muti($arr,$arr1, '1=1'));
+print_r(util_array::array_mult(array(1,2), array(3,4), array(5,6)));
 
 ?>
